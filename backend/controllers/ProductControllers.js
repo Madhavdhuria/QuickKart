@@ -37,16 +37,27 @@ async function Create(req, res) {
     res.status(500).json({ error: "Something went wrong" });
   }
 }
-
 async function GetProducts(req, res) {
   try {
-    const AllProducts = await Product.find({});
+    const { category, maxPrice, sortBy } = req.query;
 
-    return res.json({
-      AllProducts,
-    });
+    const filter = {};
+    if (category) filter.category = category;
+    if (maxPrice) filter.price = { $lte: Number(maxPrice) };
+
+    let query = Product.find(filter);
+
+    if (sortBy === "priceAsc") {
+      query = query.sort({ price: 1 });
+    } else if (sortBy === "priceDesc") {
+      query = query.sort({ price: -1 });
+    }
+
+    const AllProducts = await query;
+
+    return res.json({ AllProducts });
   } catch (error) {
-    return res.json({
+    return res.status(500).json({
       message: "Unable to get products",
       error: error.message,
     });
@@ -95,7 +106,6 @@ async function DeleteProducts(req, res) {
   }
 }
 
-
 async function DeleteProductById(req, res) {
   try {
     const { id } = req.params;
@@ -117,5 +127,25 @@ async function DeleteProductById(req, res) {
     });
   }
 }
+async function FetchCategories(req, res) {
+  try {
+    const categories = await Product.find({}).distinct("category");
+    return res.status(200).json({
+      categories,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: "Failed to fetch categories",
+      details: error.message,
+    });
+  }
+}
 
-module.exports = { Create, GetProducts, GetProduct,DeleteProducts,DeleteProductById };
+module.exports = {
+  Create,
+  GetProducts,
+  GetProduct,
+  DeleteProducts,
+  DeleteProductById,
+  FetchCategories,
+};

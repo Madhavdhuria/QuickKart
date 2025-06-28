@@ -6,6 +6,7 @@ const {
   GetProduct,
   DeleteProducts,
   DeleteProductById,
+  FetchCategories
 } = require("../controllers/ProductControllers");
 const { upload } = require("../utils/multer");
 const checkImage = require("../middlewares/checkImage");
@@ -22,5 +23,6 @@ router.get("/products", GetProducts);
 router.get("/product/:id", GetProduct);
 router.delete("/products", DeleteProducts);
 router.delete("/products/:id", DeleteProductById);
+router.get("/categories",FetchCategories);
 
 module.exports = router;

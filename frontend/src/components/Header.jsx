@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, LogOut, LayoutGrid } from "lucide-react";
+import { ShoppingCart, LogOut, LayoutGrid, PackageCheck } from "lucide-react"; // <- Added icon
 
 const Header = () => {
   const navigate = useNavigate();
@@ -21,6 +21,11 @@ const Header = () => {
         <Link to="/products" className="flex items-center gap-1 text-gray-700 hover:text-blue-600">
           <LayoutGrid className="w-5 h-5" />
           <span className="hidden sm:inline text-sm font-medium">All Products</span>
+        </Link>
+
+        <Link to="/orders" className="flex items-center gap-1 text-gray-700 hover:text-blue-600">
+          <PackageCheck className="w-5 h-5" />
+          <span className="hidden sm:inline text-sm font-medium">Your Orders</span>
         </Link>
 
         <Link to="/cart" className="flex items-center gap-1 text-gray-700 hover:text-blue-600">
