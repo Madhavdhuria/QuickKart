@@ -32,6 +32,7 @@ async function RegisterUser(req, res) {
 
 async function LoginUser(req, res) {
   const { email, password } = req.body;
+  
   try {
     if (!email || !password) throw new Error("Invalid inputs !");
 
@@ -58,6 +59,7 @@ async function LoginUser(req, res) {
 
     return res.status(200).json({
       message: "Logged In successfully !!",
+      ExistingUser
     });
   } catch (error) {
     return res.status(500).json({
