@@ -1,6 +1,8 @@
 const { userCreateSchema } = require("../Zod/UserZod");
 const User = require("../models/Userschema");
 const CreateUser = require("../services/UserServices");
+const jwt = require("jsonwebtoken");
+const { GetOrders } = require("../services/OrderServices");
 
 async function RegisterUser(req, res) {
   try {
@@ -24,7 +26,6 @@ async function RegisterUser(req, res) {
       message: "User registered successfully",
       token: jwtToken,
     });
-    
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -32,7 +33,7 @@ async function RegisterUser(req, res) {
 
 async function LoginUser(req, res) {
   const { email, password } = req.body;
-  
+
   try {
     if (!email || !password) throw new Error("Invalid inputs !");
 
@@ -59,7 +60,8 @@ async function LoginUser(req, res) {
 
     return res.status(200).json({
       message: "Logged In successfully !!",
-      ExistingUser
+      token,
+      ExistingUser,
     });
   } catch (error) {
     return res.status(500).json({
@@ -68,4 +70,25 @@ async function LoginUser(req, res) {
   }
 }
 
-module.exports = { RegisterUser, LoginUser };
+async function GetUserOrders(req, res) {
+  const token =
+    req.cookies?.token || (req.headers.authorization?.split(" ")[1] ?? null);
+
+  if (!token) {
+    return res
+      .status(401)
+      .json({ message: "Authentication token is required" });
+  }
+
+  try {
+    let decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const orders = await GetOrders(decoded.id);
+
+    return res.json({ orders });
+  } catch (err) {
+    return res.status(401).json({ message: "Invalid or expired token" });
+  }
+}
+
+module.exports = { RegisterUser, LoginUser, GetUserOrders };

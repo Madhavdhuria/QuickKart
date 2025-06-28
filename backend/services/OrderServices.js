@@ -1,6 +1,7 @@
 const Product = require("../models/ProductSchema");
 const User = require("../models/Userschema");
 const Order = require("../models/Orderschema");
+const jwt = require("jsonwebtoken");
 
 async function Create(data) {
   try {
@@ -21,4 +22,20 @@ async function Create(data) {
   }
 }
 
-module.exports = { Create };
+async function GetOrders(id) {
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      throw new Error("Unable to find user");
+    }
+
+    const orders = await Order.find({ user: id });
+    return orders;
+  } catch (error) {
+    console.error("Error in GetUserOrders:", error);
+    return res.status(500).json({ error: error.message });
+  }
+}
+
+module.exports = { Create, GetOrders };
