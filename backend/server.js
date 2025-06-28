@@ -3,8 +3,8 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 
 const UserRoutes = require("./Routes/UserRoutes");
+const ProductRoutes = require("./Routes/ProductRoutes");
 // const OrderRoutes = require("./Routes/OrderRoutes");
-// const ProductRoutes = require("./Routes/ProductRoutes");
 
 dotenv.config();
 connectDB();
@@ -12,9 +12,9 @@ connectDB();
 const app = express();
 app.use(express.json()); 
 
-app.use("/api/user", UserRoutes);
+app.use("/api/users", UserRoutes);
+app.use("/api/products", ProductRoutes);
 // app.use("/api/order", OrderRoutes);
-// app.use("/api/product", ProductRoutes);
 
 app.get("/", (req, res) => {
   res.send("QuickKart API is live 🚀");

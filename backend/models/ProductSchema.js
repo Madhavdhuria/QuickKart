@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const ProductSchema = new mongoose.Schema({
   name: {
@@ -42,8 +42,8 @@ const ProductSchema = new mongoose.Schema({
           message: "Invalid image URL format",
         },
       },
-      public_id: String, 
-    }
+      public_id: String,
+    },
   ],
 
   rating: {
@@ -64,4 +64,4 @@ const ProductSchema = new mongoose.Schema({
 
 const Product = mongoose.model("Product", ProductSchema);
 
-export default Product;
+module.exports = Product;
