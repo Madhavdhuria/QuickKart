@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Signin() {
   const [formData, setFormData] = useState({
@@ -31,12 +33,19 @@ export default function Signin() {
       );
 
       const { token } = res.data;
-
       localStorage.setItem("token", token);
 
-      navigate("/");
+      toast.success("Login Successful!", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+
+      setTimeout(() => navigate("/"), 1000);
     } catch (error) {
-      alert(error.response?.data?.error || "Login failed");
+      toast.error(error.response?.data?.error || "Login failed", {
+        position: "top-right",
+        autoClose: 3000,
+      });
     }
   };
 
@@ -80,6 +89,7 @@ export default function Signin() {
           </Link>
         </p>
       </div>
+      <ToastContainer />
     </div>
   );
 }

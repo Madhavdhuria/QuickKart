@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -41,10 +43,16 @@ export default function Signup() {
       const { token } = res.data;
       localStorage.setItem("token", token);
 
-      alert("Signup successful!");
-      navigate("/");
+      toast.success("Signup successful!", { autoClose: 2000 });
+
+      setTimeout(() => navigate("/"), 1000); 
     } catch (error) {
-      alert(error.response?.data?.error || "Signup failed");
+      const message =
+        error.response?.data?.error ||
+        error.response?.data?.message ||
+        "Signup failed";
+
+      toast.error(message, { autoClose: 3000 });
     }
   };
 
@@ -116,6 +124,7 @@ export default function Signup() {
           </button>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 }

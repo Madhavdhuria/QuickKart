@@ -20,7 +20,7 @@ async function RegisterUser(req, res) {
       throw new Error("User with the same Email Already exists !!");
     }
 
-    const jwtToken = await CreateUser(parsed.data);
+    const jwtToken = await CreateUser(parsed.data,res);
 
     return res.status(201).json({
       message: "User registered successfully",
