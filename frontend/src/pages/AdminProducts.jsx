@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Pencil, Plus, Trash } from "lucide-react";
+import { Pencil, Plus } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 const AdminProducts = () => {
@@ -27,7 +27,7 @@ const AdminProducts = () => {
 
     fetchProducts();
   }, []);
-const navigate=useNavigate()
+  const navigate = useNavigate();
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="flex items-center justify-between mb-6">
@@ -36,9 +36,13 @@ const navigate=useNavigate()
           to="/admin/products/create"
           className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition text-sm font-medium"
         >
-          <Plus size={18} onClick={()=>{
-            navigate("/admin/products/add")
-          }} /> Add Product
+          <Plus
+            size={18}
+            onClick={() => {
+              navigate("/admin/products/add");
+            }}
+          />{" "}
+          Add Product
         </Link>
       </div>
 
@@ -66,11 +70,13 @@ const navigate=useNavigate()
               </p>
 
               <div className="mt-auto flex gap-2">
-                <button className="flex items-center gap-1 text-blue-600 hover:underline text-sm">
+                <button
+                  className="flex items-center gap-1 text-blue-600 hover:underline text-sm"
+                  onClick={() => {
+                    navigate(`/admin/products/${product._id}`);
+                  }}
+                >
                   <Pencil size={16} /> Edit
-                </button>
-                <button className="flex items-center gap-1 text-red-600 hover:underline text-sm">
-                  <Trash size={16} /> Delete
                 </button>
               </div>
             </div>

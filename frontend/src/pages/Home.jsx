@@ -40,7 +40,7 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="px-6 mt-6">
+      <div className="px-6 mt-6 mb-6">
         <h2 className="text-xl font-bold mb-4">Featured Products</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
           {products.length > 0 ? (

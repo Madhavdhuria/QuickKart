@@ -15,6 +15,7 @@ import AdminProducts from "./pages/AdminProducts";
 import AdminOrders from "./pages/AdminOrders";
 import AdminUsers from "./components/AdminUsers";
 import AdminProductAdd from "./pages/AdminProductAdd";
+import AdminProduct from "./components/AdminProduct";
 
 const App = () => {
   return (
@@ -35,6 +36,7 @@ const App = () => {
           <Route path="orders" element={<AdminOrders />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="products/create" element={<AdminProductAdd />} />
+          <Route path="products/:id" element={<AdminProduct />} />
         </Route>
 
         <Route element={<PublicRoute />}>

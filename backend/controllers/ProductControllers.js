@@ -142,6 +142,42 @@ async function FetchCategories(req, res) {
   }
 }
 
+async function UpdateProduct(req, res) {
+  try {
+    const productId = req.params.id;
+    const { name, description, price, category, stock } = req.body;
+
+    console.log(productId);
+    
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      {
+        name,
+        description,
+        price,
+        category,
+        stock,
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.status(200).json({
+      message: "Product updated successfully",
+      product: updatedProduct,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to update product",
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   Create,
   GetProducts,
@@ -149,4 +185,5 @@ module.exports = {
   DeleteProducts,
   DeleteProductById,
   FetchCategories,
+  UpdateProduct,
 };
