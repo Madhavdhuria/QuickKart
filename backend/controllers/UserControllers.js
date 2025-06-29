@@ -113,4 +113,36 @@ async function CheckAuthentic(req, res) {
   }
 }
 
-module.exports = { RegisterUser, LoginUser, GetUserOrders, CheckAuthentic };
+async function CheckisAdmin(req, res) {
+  const token =
+    req.cookies?.token || (req.headers.authorization?.split(" ")[1] ?? null);
+
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized: No token provided" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.role !== "admin") {
+      return res.status(403).json({ message: "Forbidden: Admins only" });
+    }
+
+    return res.status(200).json({ message: "Authenticated", user });
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid or expired token" });
+  }
+}
+
+module.exports = {
+  RegisterUser,
+  LoginUser,
+  GetUserOrders,
+  CheckAuthentic,
+  CheckisAdmin,
+};

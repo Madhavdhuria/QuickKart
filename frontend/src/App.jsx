@@ -9,6 +9,12 @@ import Orders from "./pages/Orders";
 import Checkout from "./pages/Checkout";
 import UserProtected from "./pages/UserProtected";
 import PublicRoute from "./pages/PublicRoute";
+import AdminProtected from "./components/AdminProtected";
+import AdminDashBoard from "./pages/AdminDashBoard";
+import AdminProducts from "./pages/AdminProducts";
+import AdminOrders from "./pages/AdminOrders";
+import AdminUsers from "./components/AdminUsers";
+import AdminProductAdd from "./pages/AdminProductAdd";
 
 const App = () => {
   return (
@@ -22,9 +28,18 @@ const App = () => {
           <Route path="/orders" element={<Orders />} />
           <Route path="/product/:id" element={<Product />} />
         </Route>
+
+        <Route path="/admin" element={<AdminProtected />}>
+          <Route path="dashboard" element={<AdminDashBoard />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="orders" element={<AdminOrders />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="products/create" element={<AdminProductAdd />} />
+        </Route>
+
         <Route element={<PublicRoute />}>
-        <Route path="/signin" element={<Signin />} />
-        <Route path="/signup" element={<Signup />} />
+          <Route path="/signin" element={<Signin />} />
+          <Route path="/signup" element={<Signup />} />
         </Route>
       </Routes>
     </BrowserRouter>
