@@ -23,7 +23,7 @@ app.use(
 
 app.use("/api/users", UserRoutes);
 app.use("/api/products", ProductRoutes);
-app.use("/api/order", OrderRoutes);
+app.use("/api/orders", OrderRoutes);
 app.use("/api/cart", cartRoutes);
 
 app.get("/", (req, res) => {

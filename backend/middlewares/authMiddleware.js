@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/Userschema");
 
 const isAuthenticated = async (req, res, next) => {
+  
   try {
     const token =
       req.cookies?.token || (req.headers.authorization?.startsWith("Bearer ") 

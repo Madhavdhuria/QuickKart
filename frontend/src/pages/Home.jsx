@@ -24,7 +24,6 @@ const Home = () => {
   return (
     <>
       <Header />
-
       <div
         className="w-full h-[50vh] bg-cover bg-center relative"
         style={{ backgroundImage: `url('/your-banner.jpg')` }}
@@ -42,6 +41,7 @@ const Home = () => {
     {products.map((product) => (
       <ProductCard
         key={product._id}
+        id={product._id}
         image={product.images?.[0]?.url}
         name={product.name}
         description={product.description}

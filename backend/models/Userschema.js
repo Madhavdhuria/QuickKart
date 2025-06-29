@@ -73,7 +73,7 @@ UserSchema.methods.comparePassword = function (password) {
 
 UserSchema.methods.generateAuthToken = function () {
   return jwt.sign({ id: this._id, role: this.role }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
+    expiresIn: "7d",
   });
 };
 

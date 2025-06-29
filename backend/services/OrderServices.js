@@ -1,7 +1,7 @@
 const Product = require("../models/ProductSchema");
 const User = require("../models/Userschema");
 const Order = require("../models/Orderschema");
-const jwt = require("jsonwebtoken");
+const Cart = require("../models/CartSchema");
 
 async function Create(data) {
   try {
@@ -16,6 +16,9 @@ async function Create(data) {
     }
 
     const newOrder = await Order.create(data);
+
+    await Cart.findOneAndUpdate({ userId }, { items: [] });
+
     return newOrder;
   } catch (err) {
     throw new Error(err.message);
@@ -30,7 +33,9 @@ async function GetOrders(id) {
       throw new Error("Unable to find user");
     }
 
-    const orders = await Order.find({ user: id });
+    const orders = await Order.find({ user: id })
+      .populate("items.product")
+      .sort({ createdAt: -1 });
     return orders;
   } catch (error) {
     console.error("Error in GetUserOrders:", error);
