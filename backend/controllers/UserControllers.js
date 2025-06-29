@@ -2,6 +2,8 @@ const { userCreateSchema } = require("../Zod/UserZod");
 const User = require("../models/Userschema");
 const CreateUser = require("../services/UserServices");
 const jwt = require("jsonwebtoken");
+const Order = require("../models/Orderschema");
+const Cart =require("../models/CartSchema")
 const { GetOrders } = require("../services/OrderServices");
 
 async function RegisterUser(req, res) {
@@ -139,10 +141,77 @@ async function CheckisAdmin(req, res) {
   }
 }
 
+async function GetAllUsers(req, res) {
+  try {
+    const token =
+      req.cookies?.token || (req.headers.authorization?.split(" ")[1] ?? null);
+
+    if (!token) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: No token provided" });
+    }
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      return res.status(401).json({ message: "Unauthorized: Invalid token" });
+    }
+
+    const user = await User.findById(decoded.id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.role !== "admin") {
+      return res.status(403).json({ message: "Forbidden: Admins only" });
+    }
+
+    const users = await User.find({ _id: { $ne: user._id } }).select(
+      "-password"
+    );
+
+    return res.status(200).json({ users });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Unable to get users",
+      error: error.message,
+    });
+  }
+}
+
+const DeleteUserAndReferences = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    console.log(userId);
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    await Order.deleteMany({ _id: { $in: user.orders } });
+
+    await Cart.findOneAndDelete({ userId });
+
+    await User.findByIdAndDelete(userId);
+
+    res.json({
+      message: "User, cart, and related orders deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to delete user and related data",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   RegisterUser,
   LoginUser,
   GetUserOrders,
   CheckAuthentic,
   CheckisAdmin,
+  GetAllUsers,
+  DeleteUserAndReferences,
 };
