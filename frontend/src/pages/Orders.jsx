@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "../components/Header";
+import { toast, ToastContainer } from "react-toastify";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -8,14 +9,21 @@ const Orders = () => {
   const fetchOrders = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:3000/api/orders/GetOrders", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await axios.get(
+        "http://localhost:3000/api/orders/GetOrders",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (res.data.orders.length > 0) {
+        toast.success("Orders loaded successfully");
+      }
       setOrders(res.data.orders || []);
     } catch (err) {
       console.error("Failed to fetch orders", err);
+      toast.error("Unable to load your orders. Please try again.");
     }
   };
 
@@ -31,9 +39,6 @@ const Orders = () => {
       </>
     );
   }
-
-  console.log(orders);
-  
 
   return (
     <>
@@ -88,6 +93,7 @@ const Orders = () => {
           ))}
         </div>
       </div>
+      <ToastContainer position="top-right" autoClose={3000} />
     </>
   );
 };

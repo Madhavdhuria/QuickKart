@@ -20,7 +20,7 @@ async function RegisterUser(req, res) {
       throw new Error("User with the same Email Already exists !!");
     }
 
-    const jwtToken = await CreateUser(parsed.data,res);
+    const jwtToken = await CreateUser(parsed.data, res);
 
     return res.status(201).json({
       message: "User registered successfully",
@@ -91,4 +91,26 @@ async function GetUserOrders(req, res) {
   }
 }
 
-module.exports = { RegisterUser, LoginUser, GetUserOrders };
+async function CheckAuthentic(req, res) {
+  const token =
+    req.cookies?.token || (req.headers.authorization?.split(" ")[1] ?? null);
+
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select("-password");
+
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "Authenticated", user });
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid or expired token" });
+  }
+}
+
+module.exports = { RegisterUser, LoginUser, GetUserOrders, CheckAuthentic };
