@@ -51,7 +51,7 @@ const Products = () => {
   return (
     <>
       <Header />
-      <div className="flex min-h-screen">
+      <div className="flex flex-col xl:flex-row min-h-screen">
         <Filters
           category={category}
           setCategory={setCategory}
@@ -61,8 +61,8 @@ const Products = () => {
           setSortBy={setSortBy}
           categories={categories}
         />
-        <div className="px-6 mt-6 flex-1">
-          <h2 className="text-2xl font-bold mb-4">All Products</h2>
+        <div className="px-4 mt-4 lg:px-6 lg:mt-6 flex-1">
+          <h2 className="text-xl lg:text-2xl font-bold mb-4">All Products</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
             {products.length > 0 ? (
               products.map((product) => (
