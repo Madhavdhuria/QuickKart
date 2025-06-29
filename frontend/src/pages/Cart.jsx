@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import { Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
 
 const Cart = () => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const [total, setTotal] = useState(0);
 
-  
   const fetchCart = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -29,13 +29,14 @@ const Cart = () => {
       setTotal(totalPrice);
     } catch (err) {
       console.error("Failed to fetch cart", err);
+      toast.error("Failed to fetch cart");
     }
   };
 
   useEffect(() => {
     fetchCart();
   }, []);
-  
+
   const handleClearCart = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -44,12 +45,14 @@ const Cart = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      toast.success("Cart cleared");
       fetchCart();
     } catch (err) {
       console.error("Failed to clear cart", err);
+      toast.error("Failed to clear cart");
     }
   };
-  
+
   const handleRemove = async (productId) => {
     try {
       const token = localStorage.getItem("token");
@@ -59,9 +62,11 @@ const Cart = () => {
         },
       });
 
+      toast.success("Item removed");
       fetchCart();
     } catch (err) {
       console.error("Failed to remove item", err);
+      toast.error("Failed to remove item");
     }
   };
 
@@ -151,6 +156,7 @@ const Cart = () => {
           </button>
         </div>
       </div>
+      <ToastContainer position="top-right" autoClose={3000} />
     </>
   );
 };

@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Header from "../components/Header";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Product = () => {
   const { id } = useParams();
@@ -17,6 +19,7 @@ const Product = () => {
         setProduct(res.data.product);
       } catch (error) {
         console.error("Failed to fetch product", error);
+        toast.error("Failed to load product.", { position: "top-right" });
       }
     }
     GetProduct();
@@ -31,28 +34,29 @@ const Product = () => {
   };
 
   const handleAddToCart = async () => {
-  try {
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    const res = await axios.post(
-      "http://localhost:3000/api/cart/add",
-      {
-        productId: product._id,
-        quantity,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      await axios.post(
+        "http://localhost:3000/api/cart/add",
+        {
+          productId: product._id,
+          quantity,
         },
-      }
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    console.log("Cart updated:", res.data);
-  } catch (err) {
-    console.error("Failed to add to cart", err);
-  }
-};
-
+      toast.success("Added to cart!", { position: "top-right" });
+    } catch (err) {
+      console.error("Failed to add to cart", err);
+      const message = err.response?.data?.error || "Something went wrong.";
+      toast.error(message, { position: "top-right" });
+    }
+  };
 
   if (!product) {
     return <div className="text-center mt-10 text-lg">Loading product...</div>;
@@ -111,6 +115,8 @@ const Product = () => {
           </div>
         </div>
       </div>
+
+      <ToastContainer />
     </>
   );
 };
