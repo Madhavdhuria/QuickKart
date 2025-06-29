@@ -37,6 +37,7 @@ async function Create(req, res) {
     res.status(500).json({ error: "Something went wrong" });
   }
 }
+
 async function GetProducts(req, res) {
   try {
     const { category, maxPrice, sortBy } = req.query;

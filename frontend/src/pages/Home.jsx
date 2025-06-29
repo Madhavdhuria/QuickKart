@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "../components/Header";
 import ProductCard from "../components/ProductCard";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -15,6 +17,9 @@ const Home = () => {
         setProducts(res.data.AllProducts || []);
       } catch (error) {
         console.error("Error fetching products:", error.message);
+        toast.error("Failed to fetch products. Please try again later.", {
+          position: "top-right",
+        });
       }
     };
 
@@ -35,23 +40,28 @@ const Home = () => {
         </div>
       </div>
 
-     <div className="px-6 mt-6">
-  <h2 className="text-xl font-bold mb-4">Featured Products</h2>
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
-    {products.map((product) => (
-      <ProductCard
-        key={product._id}
-        id={product._id}
-        image={product.images?.[0]?.url}
-        name={product.name}
-        description={product.description}
-        price={product.price}
-        stock={product.stock}
-      />
-    ))}
-  </div>
-</div>
+      <div className="px-6 mt-6">
+        <h2 className="text-xl font-bold mb-4">Featured Products</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
+          {products.length > 0 ? (
+            products.map((product) => (
+              <ProductCard
+                key={product._id}
+                id={product._id}
+                image={product.images?.[0]?.url}
+                name={product.name}
+                description={product.description}
+                price={product.price}
+                stock={product.stock}
+              />
+            ))
+          ) : (
+            <p className="col-span-full text-gray-500">No products found.</p>
+          )}
+        </div>
+      </div>
 
+      <ToastContainer />
     </>
   );
 };
