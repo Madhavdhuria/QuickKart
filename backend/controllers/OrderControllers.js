@@ -1,6 +1,7 @@
 const { OrderCreateSchema } = require("../Zod/OrderZod");
 const { Create } = require("../services/OrderServices");
 const { GetOrders: GetUserOrders } = require("../services/OrderServices");
+const Order = require("../models/Orderschema");
 
 async function CreateOrder(req, res) {
   try {
@@ -36,4 +37,52 @@ async function GetOrders(req, res) {
   }
 }
 
-module.exports = { CreateOrder, GetOrders };
+async function GetAllOrdersForAdmin(req, res) {
+  try {
+    const orders = await Order.find({})
+      .populate("items.product")
+      .populate("user", "userName email");
+
+    return res.json({
+      orders,
+    });
+  } catch (error) {
+    res.json({
+      message: "Unable to fetch all orders",
+      error: error.message,
+    });
+  }
+}
+
+async function updateOrderStatus(req, res) {
+  try {
+    const { status } = req.body;
+    const { id } = req.params;
+
+    if (!status) {
+      return res.status(400).json({ message: "Status is required" });
+    }
+
+    const updatedOrder = await Order.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    res.status(200).json({
+      message: "Order status updated successfully",
+      order: updatedOrder,
+    });
+    
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to update order status",
+      error: error.message,
+    });
+  }
+}
+module.exports = { CreateOrder, GetOrders, GetAllOrdersForAdmin,updateOrderStatus };
