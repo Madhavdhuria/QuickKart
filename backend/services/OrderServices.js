@@ -38,9 +38,31 @@ async function GetOrders(id) {
       .sort({ createdAt: -1 });
     return orders;
   } catch (error) {
-    console.error("Error in GetUserOrders:", error);
-    return res.status(500).json({ error: error.message });
+    throw new Error(err.message);
   }
 }
 
-module.exports = { Create, GetOrders };
+async function UpdateOrder(id) {
+  try {
+    const existingOrder = await Order.findById(id);
+
+    if (!existingOrder) {
+      const error = new Error("Order not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const updatedOrder = await Order.findByIdAndUpdate(
+      id,
+      { $set: { status: "cancelled" } },
+      { new: true } 
+    );
+
+    return updatedOrder;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+module.exports = { Create, GetOrders, UpdateOrder };

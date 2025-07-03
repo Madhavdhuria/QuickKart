@@ -1,6 +1,9 @@
 const { OrderCreateSchema } = require("../Zod/OrderZod");
 const { Create } = require("../services/OrderServices");
-const { GetOrders: GetUserOrders } = require("../services/OrderServices");
+const {
+  GetOrders: GetUserOrders,
+  UpdateOrder,
+} = require("../services/OrderServices");
 const Order = require("../models/Orderschema");
 
 async function CreateOrder(req, res) {
@@ -77,7 +80,6 @@ async function updateOrderStatus(req, res) {
       message: "Order status updated successfully",
       order: updatedOrder,
     });
-    
   } catch (error) {
     res.status(500).json({
       message: "Failed to update order status",
@@ -85,4 +87,28 @@ async function updateOrderStatus(req, res) {
     });
   }
 }
-module.exports = { CreateOrder, GetOrders, GetAllOrdersForAdmin,updateOrderStatus };
+
+async function CancelOrder(req, res) {
+  try {
+    const { id } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ message: "Order Id required!" });
+    }
+
+    const updatedOrder = await UpdateOrder(id);
+
+    return res.status(200).json({ updatedOrder });
+  } catch (error) {
+    return res.status(error.statusCode || 500).json({ message: error.message });
+  }
+}
+
+
+module.exports = {
+  CreateOrder,
+  GetOrders,
+  GetAllOrdersForAdmin,
+  updateOrderStatus,
+  CancelOrder,
+};
