@@ -6,14 +6,36 @@ import {
   PackageCheck,
   ShieldCheck,
 } from "lucide-react";
+import { useEffect } from "react";
+import axios from "axios";
+import { useState } from "react";
 
 const Header = () => {
+  const [admin, setadmin] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    async function isAdmin() {
+      try {
+        await axios.get("http://localhost:3000/api/users/isAdmin", {
+          headers: { Authorization: `bearer ${localStorage.getItem("token")}` },
+          withCredentials: true,
+        });
+        setadmin(true);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    isAdmin();
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/signin");
   };
+
+  console.log(admin);
 
   return (
     <header className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
@@ -23,13 +45,15 @@ const Header = () => {
             QuickKart
           </Link>
         </h1>
-        <Link
-          to="/admin/dashboard"
-          className="flex items-center gap-1 text-gray-700 hover:text-blue-600"
-        >
-          <ShieldCheck className="w-5 h-5" />
-          <span className="hidden sm:inline text-sm font-medium">Admin</span>
-        </Link>
+        {admin && (
+          <Link
+            to="/admin/dashboard"
+            className="flex items-center gap-1 text-gray-700 hover:text-blue-600"
+          >
+            <ShieldCheck className="w-5 h-5" />
+            <span className="hidden sm:inline text-sm font-medium">Admin</span>
+          </Link>
+        )}
       </div>
 
       <nav className="flex items-center gap-6">

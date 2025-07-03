@@ -3,7 +3,7 @@ const User = require("../models/Userschema");
 const CreateUser = require("../services/UserServices");
 const jwt = require("jsonwebtoken");
 const Order = require("../models/Orderschema");
-const Cart =require("../models/CartSchema")
+const Cart = require("../models/CartSchema");
 const { GetOrders } = require("../services/OrderServices");
 
 async function RegisterUser(req, res) {
@@ -130,6 +130,7 @@ async function CheckisAdmin(req, res) {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+    console.log(user);
 
     if (user.role !== "admin") {
       return res.status(403).json({ message: "Forbidden: Admins only" });
