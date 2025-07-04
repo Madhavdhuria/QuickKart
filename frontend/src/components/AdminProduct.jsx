@@ -40,43 +40,42 @@ const AdminProduct = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name == "productImage") {
+    if (name == "ProductImage") {
       setImage(e.target.files[0]);
     } else setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  const data = new FormData();
+    e.preventDefault();
+    const data = new FormData();
 
-  Object.entries(formData).forEach(([key, value]) => {
-    data.append(key, value);
-  });
-  if (image) data.append("ProductImage", image);
-  
-  try {
-  const res=  await axios.put(
-      `http://localhost:3000/api/products/update/${id}`,
-      data,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    Object.entries(formData).forEach(([key, value]) => {
+      data.append(key, value);
+    });
+    if (image) data.append("ProductImage", image);
 
-    console.log(res);
-    
-    toast.success("Product updated successfully!");
-    setTimeout(() => {
-      navigate("/admin/products");
-    }, 1500);
-  } catch (err) {
-    toast.error("Update failed");
-    console.error(err); 
-  }
-};
+    try {
+      const res = await axios.put(
+        `http://localhost:3000/api/products/update/${id}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
+      console.log(res);
+
+      toast.success("Product updated successfully!");
+      setTimeout(() => {
+        navigate("/admin/products");
+      }, 1500);
+    } catch (err) {
+      toast.error("Update failed");
+      console.error(err);
+    }
+  };
 
   return (
     <div className="p-4 max-w-md mx-auto">

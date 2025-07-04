@@ -1,6 +1,9 @@
 const { ProductCreateSchema } = require("../Zod/ProductZod");
 const cloudinary = require("../utils/cloudinary");
-const { CreateProduct } = require("../services/ProductServices");
+const {
+  CreateProduct,
+  extractPublicId,
+} = require("../services/ProductServices");
 const fs = require("fs");
 const Product = require("../models/ProductSchema");
 
@@ -146,8 +149,33 @@ async function UpdateProduct(req, res) {
   try {
     const productId = req.params.id;
     const { name, description, price, category, stock } = req.body;
-    // console.log(req.file.path);
-    console.log(productId);
+
+    const existingProduct = await Product.findById(productId);
+    if (!existingProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    let images = existingProduct.images;
+
+    if (req.file) {
+      const oldImageUrl = existingProduct.images[0]?.url;
+
+      if (oldImageUrl) {
+        const publicId = extractPublicId(oldImageUrl);
+        await cloudinary.uploader.destroy(publicId);
+      }
+
+      const cloudRes = await cloudinary.uploader.upload(req.file.path, {
+        folder: "QuickKart",
+      });
+
+      fs.unlink(req.file.path, (err) => {
+        if (err) console.error("❌ Error deleting local file:", err);
+        else console.log("🧹 Local file deleted:", req.file.path);
+      });
+
+      images = [{ url: cloudRes.secure_url }];
+    }
 
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
@@ -157,13 +185,10 @@ async function UpdateProduct(req, res) {
         price,
         category,
         stock,
+        images,
       },
       { new: true, runValidators: true }
     );
-
-    if (!updatedProduct) {
-      return res.status(404).json({ message: "Product not found" });
-    }
 
     res.status(200).json({
       message: "Product updated successfully",
