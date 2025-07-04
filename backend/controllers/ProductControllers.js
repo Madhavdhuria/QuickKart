@@ -146,9 +146,8 @@ async function UpdateProduct(req, res) {
   try {
     const productId = req.params.id;
     const { name, description, price, category, stock } = req.body;
-
+    // console.log(req.file.path);
     console.log(productId);
-    
 
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,

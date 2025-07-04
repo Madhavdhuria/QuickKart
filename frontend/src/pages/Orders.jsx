@@ -40,6 +40,9 @@ const Orders = () => {
         }
       );
       toast.success("Order cancelled successfully");
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
     } catch (error) {
       toast.error(error?.response?.data?.message || "Unable to update order");
     }
@@ -107,15 +110,18 @@ const Orders = () => {
               <div className="text-sm text-gray-500 mt-1">
                 Ordered on: {new Date(order.createdAt).toLocaleString()}
               </div>
-             {order.status !== "cancelled" && <button
-                type="button"
-                className="focus:outline-none my-2 text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                onClick={() => {
-                  handleCancelOrder(order._id);
-                }}
-              >
-                cancel order
-              </button>}
+              {order.status !== "cancelled" && order.status!=='delivered'
+               && (
+                <button
+                  type="button"
+                  className="focus:outline-none my-2 text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                  onClick={() => {
+                    handleCancelOrder(order._id);
+                  }}
+                >
+                  cancel order
+                </button>
+              )}
             </div>
           ))}
         </div>
