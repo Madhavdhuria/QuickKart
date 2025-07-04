@@ -6,6 +6,8 @@ const Filters = ({
   sortBy,
   setSortBy,
   categories,
+  Search,
+  setSearch,
 }) => {
   return (
     <aside className="w-full xl:w-64 p-4 border-b xl:border-b-0 xl:border-r bg-gray-100">
@@ -51,6 +53,19 @@ const Filters = ({
             <option value="priceAsc">Price: Low to High</option>
             <option value="priceDesc">Price: High to Low</option>
           </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">
+            Search By Name
+          </label>
+          <input
+            type="text"
+            value={Search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full border p-2"
+            placeholder="Search..."
+          />
         </div>
       </div>
     </aside>

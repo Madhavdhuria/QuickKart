@@ -12,14 +12,18 @@ const Products = () => {
   const [maxPrice, setMaxPrice] = useState(50000);
   const [sortBy, setSortBy] = useState("");
   const [categories, setcategories] = useState([]);
+  const [Search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchFilteredProducts = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/products/products", {
-          params: { category, maxPrice, sortBy },
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          "http://localhost:3000/api/products/products",
+          {
+            params: { category, maxPrice, sortBy, Search },
+            withCredentials: true,
+          }
+        );
         setProducts(res.data.AllProducts || []);
       } catch (err) {
         console.error("Error fetching filtered products:", err.message);
@@ -30,12 +34,14 @@ const Products = () => {
     };
 
     fetchFilteredProducts();
-  }, [category, maxPrice, sortBy]);
+  }, [category, maxPrice, sortBy, Search]);
 
   useEffect(() => {
     const Fetchcategories = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/products/categories");
+        const res = await axios.get(
+          "http://localhost:3000/api/products/categories"
+        );
         setcategories(res.data.categories || []);
       } catch (err) {
         console.error("Error fetching categories:", err.message);
@@ -60,6 +66,8 @@ const Products = () => {
           sortBy={sortBy}
           setSortBy={setSortBy}
           categories={categories}
+          Search={Search}
+          setSearch={setSearch}
         />
         <div className="px-4 mt-4 lg:px-6 lg:mt-6 flex-1">
           <h2 className="text-xl lg:text-2xl font-bold mb-4">All Products</h2>

@@ -45,11 +45,15 @@ async function Create(req, res) {
 
 async function GetProducts(req, res) {
   try {
-    const { category, maxPrice, sortBy } = req.query;
+    const { category, maxPrice, sortBy, Search } = req.query;
 
     const filter = {};
     if (category) filter.category = category;
     if (maxPrice) filter.price = { $lte: Number(maxPrice) };
+
+    if (Search) {
+      filter.name = { $regex: Search, $options: "i" };
+    }
 
     let query = Product.find(filter);
 
