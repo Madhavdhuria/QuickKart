@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Pencil, Plus } from "lucide-react";
+import { Delete, Pencil, Plus } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 const AdminProducts = () => {
@@ -27,6 +27,23 @@ const AdminProducts = () => {
 
     fetchProducts();
   }, []);
+
+  async function HandleDelete(id) {
+    try {
+      await axios.delete(`http://localhost:3000/api/products/product/${id}`);
+
+      window.location.reload();
+    } catch (error) {
+      toast.error(
+        "Failed to Delete product. Please try again later.",
+        error.message,
+        {
+          position: "top-right",
+        }
+      );
+    }
+  }
+
   const navigate = useNavigate();
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -77,6 +94,14 @@ const AdminProducts = () => {
                   }}
                 >
                   <Pencil size={16} /> Edit
+                </button>
+                <button
+                  className="flex items-center gap-1 text-red-600 hover:underline text-sm"
+                  onClick={() => {
+                    HandleDelete(product._id);
+                  }}
+                >
+                  <Delete size={16} /> Delete
                 </button>
               </div>
             </div>

@@ -6,6 +6,7 @@ const {
 } = require("../services/ProductServices");
 const fs = require("fs");
 const Product = require("../models/ProductSchema");
+const Cart = require("../models/CartSchema");
 
 async function Create(req, res) {
   try {
@@ -22,6 +23,7 @@ async function Create(req, res) {
     images.push({
       url: cloudRes.secure_url,
     });
+
     const newProduct = await CreateProduct({
       ...result.data,
       images,
@@ -120,6 +122,14 @@ async function DeleteProductById(req, res) {
       return res.status(404).json({ message: "Product not found" });
     }
 
+    const publicId = extractPublicId(deletedProduct.images[0].url);
+    await cloudinary.uploader.destroy(publicId);
+
+    await Cart.updateMany(
+      { "items.productId": deletedProduct._id },
+      { $pull: { items: { productId: deletedProduct._id } } }
+    );
+
     return res.status(200).json({
       message: "Product deleted successfully",
       deletedProduct,
@@ -131,6 +141,7 @@ async function DeleteProductById(req, res) {
     });
   }
 }
+
 async function FetchCategories(req, res) {
   try {
     const categories = await Product.find({}).distinct("category");

@@ -23,7 +23,7 @@ router.put("/update/:id", upload.single("ProductImage"), UpdateProduct);
 router.get("/products", GetProducts);
 router.get("/product/:id", GetProduct);
 router.delete("/products", DeleteProducts);
-router.delete("/products/:id", DeleteProductById);
+router.delete("/product/:id", DeleteProductById);
 router.get("/categories", FetchCategories);
 
 module.exports = router;
